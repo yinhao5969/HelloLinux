@@ -17,13 +17,26 @@
 /*三星平台4412平台，GPIO宏定义头文件*/
 #include <mach/gpio-exynos4.h>
 
+/*模块参数相关*/
+#include <linux/moduleparam.h>
+/*定义module_param module_param_array中perm的头文件*/
+#include <linux/stat.h>
+
 #define DRIVER_NAME "led_ctl"
 #define DEVICE_NAME "led_ctl"
 #define MISC_DEVICE_NAME "led_ctl_misc"
 
-
 MODULE_LICENSE("Dual BSD/GPL");
 MODULE_AUTHOR("Holden");
+
+enum LedState{
+    LED_OFF,
+    LED_ON
+};
+
+static int led_state;
+
+module_param(led_state, int, S_IRUSR);
 
 //device definition
 //device definition
@@ -55,6 +68,12 @@ static int LedCtl_Device_init(void)
 static void LedCtl_Device_exit(void)
 {
     printk(KERN_EMERG "ENTER: LedCtl_Device_exit\n");		
+
+    //release gpio
+    printk(KERN_EMERG "release\n");
+    gpio_free(EXYNOS4_GPL2(0));
+
+    //unregister device
     printk(KERN_EMERG "platform_device_unregister try to unregister LedCtl_Device\n");
 	platform_device_unregister(&LedCtl_Device);
 	return;
@@ -113,7 +132,11 @@ static int LedCtl_probe(struct platform_device *pdv){
 
     s3c_gpio_cfgpin(EXYNOS4_GPL2(0),S3C_GPIO_OUTPUT);
 
-    gpio_set_value(EXYNOS4_GPL2(0),0);
+    if(led_state == LED_ON){
+        gpio_set_value(EXYNOS4_GPL2(0),0);
+    } else {
+        gpio_set_value(EXYNOS4_GPL2(0),1);
+    }
 
     misc_register(&LedCtl_misc_dev);
 
