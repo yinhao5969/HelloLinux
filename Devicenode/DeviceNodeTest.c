@@ -2,6 +2,8 @@
 #include <linux/module.h>
 #include <linux/platform_device.h>
 
+/*设备为杂项设备，驱动使用 platform_driver_register 注册，设备使用 platform_device_register 注册，设备节点由 misc_register 生成*/
+
 /*驱动注册的头文件，包含驱动的结构体和注册和卸载的函数*/
 #include <linux/platform_device.h>
 /*注册杂项设备头文件*/
