@@ -148,7 +148,6 @@ static int LedCtl_remove(struct platform_device *pdv) {
 static void LedCtl_shutdown(struct platform_device *pdv) { ; }
 
 static int LedCtl_suspend(struct platform_device *pdv, pm_message_t pmt) {
-
     return 0;
 }
 
